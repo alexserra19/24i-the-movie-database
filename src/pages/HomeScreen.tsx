@@ -55,12 +55,12 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const renderPrincipalMovie = () => {
         const movieIndex = Math.round(Math.random() * movies.length);
         return (
-            <View style={[commonStyles.row, styles.principalMovie]}>
+            <View style={[commonStyles.row, styles.principalMovie, commonStyles.shadows]}>
                 <Image
                     style={{ width: '100%', height: '100%', resizeMode: 'stretch' }}
                     source={{ uri: movies[movieIndex].image }}
                 />
-                <View style={{ position: 'absolute', left: 0, bottom: 0, backgroundColor: 'red' }}>
+                <View style={styles.principalMovieTextContainer}>
                     <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(movies[movieIndex].description, 40)}</Text>
                     <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(movies[movieIndex].title, 30)}</Text>
                 </View>
@@ -81,9 +81,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 />
                 {!_.isEmpty(movies) && renderPrincipalMovie()}
 
-                <View>
-                    <Text>Structure preparated</Text>
-                </View>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{ flex: 1 }}>
                         <Button
@@ -123,11 +120,22 @@ const styles = StyleSheet.create({
         borderTopWidth: 0,
         borderBottomWidth: 0,
         borderRadius: 5,
-        width: '100%'
+        width: '100%',
+        marginBottom: normalize(30)
     },
     principalMovie: {
         marginTop: normalize(20),
         height: normalize(200),
         width: '100%'
+    },
+
+    principalMovieTextContainer: {
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        backgroundColor: AppConstants.colors.black,
+        padding: normalize(10),
+        opacity: 0.8
     }
+
 });
