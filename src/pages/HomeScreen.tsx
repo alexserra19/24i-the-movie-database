@@ -54,8 +54,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     const renderPrincipalMovie = () => {
         const movieIndex = Math.round(Math.random() * movies.length);
-
-        console.log('------', movies[movieIndex])
         return (
             <View style={[commonStyles.row, styles.principalMovie]}>
                 <Image
@@ -64,7 +62,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 />
                 <View style={{ position: 'absolute', left: 0, bottom: 0, backgroundColor: 'red' }}>
                     <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(movies[movieIndex].description, 40)}</Text>
-                    <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(movies[movieIndex].title, 40)}</Text>
+                    <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(movies[movieIndex].title, 30)}</Text>
                 </View>
             </View>
         )

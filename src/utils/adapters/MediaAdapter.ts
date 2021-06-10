@@ -14,7 +14,7 @@ class MediaAdapter {
                     popularity: item.popularity,
                     date: item.release_date || item.first_air_date,
                     rate: item.vote_average,
-                    image: AppConstants.imageUrl + item.poster_path,
+                    image: (AppConstants.imageUrl + item.poster_path).replace('http', 'https'),
                     categories: item.genre_ids
                 }
             )
