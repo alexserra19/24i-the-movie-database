@@ -54,6 +54,8 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     const renderPrincipalMovie = () => {
         const movieIndex = Math.round(Math.random() * movies.length);
+
+        console.log('------', movies[movieIndex])
         return (
             <View style={[commonStyles.row, styles.principalMovie]}>
                 <Image
@@ -70,26 +72,29 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     return (
         <SafeAreaView style={styles.centeredView}>
-            <SearchBar
-                placeholder="Discover"
-                onChangeText={doSearch}
-                value={search}
-                containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
-                inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
-            />
-            { movies.length && renderPrincipalMovie()}
+            <View style={styles.container}>
 
-            <View>
-                <Text>Structure preparated</Text>
-            </View>
-            <View style={{ flex: 1, flexDirection: "row"}}>
-                <View style={{ flex: 1 }}>
-                    <Button
-                        title='aaa'
-                        onPress={() => RootNavigation.navigate(AppConstants.routeName.details)}
-                    >
-                    </Button>
+                <SearchBar
+                    placeholder="Discover"
+                    onChangeText={doSearch}
+                    value={search}
+                    containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
+                    inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
+                />
+                {!_.isEmpty(movies) && renderPrincipalMovie()}
 
+                <View>
+                    <Text>Structure preparated</Text>
+                </View>
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                    <View style={{ flex: 1 }}>
+                        <Button
+                            title='aaa'
+                            onPress={() => RootNavigation.navigate(AppConstants.routeName.details)}
+                        >
+                        </Button>
+
+                    </View>
                 </View>
             </View>
 
@@ -108,7 +113,11 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: normalize(10)
+    },
+    container: {
+        height: '100%',
+        width: '100%',
+        padding: normalize(10),
     },
     searchContainer: {
         padding: 5,
