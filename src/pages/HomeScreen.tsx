@@ -46,11 +46,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
 
     useEffect(() => {
-        console.log('movies', movies)
-        console.log('tvSeries', tvSeries)
-        console.log('moviesCategories', moviesCategories)
-        console.log('tvSeriesCategories', tvSeriesCategories)
-
         if (!_.isEmpty(movies) && !_.isEmpty(tvSeries) && !_.isEmpty(moviesCategories)) {
             props.setLoading(false)
         }
@@ -59,7 +54,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     const doSearch = (text: string) => {
         updateSearch(text)
-        console.log('text', text)
     }
 
 
