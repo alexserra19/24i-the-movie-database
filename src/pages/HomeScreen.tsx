@@ -80,6 +80,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
         updateSearch('')
         setSearchResults([])
         setIsLoading(false)
+        clearTimeout(timeoutSearch)
     }
 
     const startSearch = async (text: string) => {
