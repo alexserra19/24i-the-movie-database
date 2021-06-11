@@ -51,7 +51,8 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
                 <View style={[styles.imageContainer, { height: !isLandscape ? normalize(400) : normalize(200) }]}>
                     <Image
                         style={{ width: '100%', height: '100%', resizeMode: !isLandscape ? 'stretch' : 'cover' }}
-                        source={{ uri: media.image }}
+                        source={media.image ? { uri: media.image } : require('../assets/images/no-image.jpeg')}
+
                     />
                     <TouchableOpacity
                         onPress={() => setDisplayVideo(true)}

@@ -25,7 +25,7 @@ export const SearchItem = (props: ISearchItemProps) => {
                         styles.image,
                         {resizeMode: !props.isLandscape ? 'stretch' : 'cover' }
                     ]}
-                    source={props.item.image ? { uri: props.item.image } : require('../../assets/images/no-image.png')}
+                    source={props.item.image ? { uri: props.item.image } : require('../../assets/images/no-image.jpeg')}
                 />
                 <View style={styles.textContainer}>
                     <Text style={styles.date}>{props.item.date}</Text>

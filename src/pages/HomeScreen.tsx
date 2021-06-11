@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions, ScrollView, Picker, FlatList, Modal } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Text, Dimensions, ScrollView, FlatList } from 'react-native';
 import AppConstants from '../utils/AppConstants';
-import { ListItem, normalize, SearchBar } from 'react-native-elements';
+import { normalize, SearchBar } from 'react-native-elements';
 import { useDispatch, useSelector } from "react-redux";
-import { IsLoadingHoc } from "../components/HOCS/IsLoadingHOC";
 import * as RootNavigation from "../navigation/RootNavigation";
 import mediaActions from '../store/actions/mediaActions';
 import _ from "lodash"
@@ -11,8 +10,6 @@ import { commonStyles } from '../styles/common';
 import { Category, Media } from '../utils/typings';
 import helpers from '../utils/helpers';
 import Carousel from 'react-native-snap-carousel';
-import SelectDropdown from 'react-native-select-dropdown'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { CarouselItem } from '../components/CarouselItem/CarouselItem';
 import { MediaListItem } from '../components/MediaListItem/MediaListItem';
 import RNPickerSelect from 'react-native-picker-select';
@@ -32,20 +29,18 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const tvSeries = useSelector((store: any) => store.mediaReducer.tvSeries);
     const moviesCategories = useSelector((store: any) => store.mediaReducer.moviesCategories);
     const tvSeriesCategories = useSelector((store: any) => store.mediaReducer.tvSeriesCategories);
+    const listsLoaded = useSelector((store: any) => store.mediaReducer.listsLoaded);
     const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
     const [movieCategorySelected, setMovieCategorySelected] = useState(null);
     const [tvSerieCategorySelected, setTvSerieCategorySelected] = useState(null);
     const [isLandscape, setIsLandscape] = useState<boolean>(helpers.isLandscape());
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchResults, setSearchResults] = useState<Array<Media>>([]);
     const [showNoResultsModal, setShowNoResultsModal] = useState<boolean>(false);
     const [timeoutSearch, setTimeoutSearch] = useState<any>(0);
-
-
     const dispatch = useDispatch()
 
     useEffect(() => {
-        setIsLoading(true)
         dispatch(mediaActions.initializeStart())
 
         Dimensions.addEventListener('change', () => {
@@ -63,22 +58,23 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
 
     useEffect(() => {
-        if (!_.isEmpty(movies) && !_.isEmpty(tvSeries) && !_.isEmpty(moviesCategories)) {
+        if (listsLoaded) {
             setIsLoading(false)
         }
-    }, [movies, tvSeries]);
+    }, [listsLoaded]);
 
 
-    const doSearch = (text: string) => {
-        updateSearch(text)
-        
-        if (_.isEmpty(text)) cleanSearch()
-
-        else {
-            if (timeoutSearch) clearTimeout(timeoutSearch)
-            const timeout = setTimeout(() => { startSearch(text) }, 100);
-            setTimeoutSearch(timeout)
+    useEffect(() => {
+        if (listsLoaded) {
+            if (search) doSearch()
+            else cleanSearch()
         }
+    }, [search]);
+
+    const doSearch = () => {
+        if (timeoutSearch) clearTimeout(timeoutSearch)
+        const timeout = setTimeout(() => { startSearch(search) }, 100);
+        setTimeoutSearch(timeout)
     }
 
     const cleanSearch = () => {
@@ -90,7 +86,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const startSearch = async (text: string) => {
 
         setIsLoading(true)
-
         const data = await MediaService.searchMedia(text)
 
         if (!_.isEmpty(data)) setSearchResults(data)
@@ -99,7 +94,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
             setShowNoResultsModal(true)
         }
         setIsLoading(false)
-
     }
 
     const renderHomeContent = () => {
@@ -164,24 +158,10 @@ const HomeScreen = (props: IHomeScreenProps) => {
                             color: AppConstants.colors.black
                         }}
                         style={{
-                            viewContainer: {
-                                justifyContent: 'center',
-                                width: '100%',
-                                flex: 1
-                            },
-                            inputAndroid: {
-                                fontSize: normalize(15),
-                                color: AppConstants.colors.black
-                            },
-                            inputIOS: {
-                                fontSize: normalize(15),
-                                color: AppConstants.colors.black,
-                                textAlign: 'right'
-                            },
-                            placeholder: {
-                                fontSize: normalize(15),
-                                color: AppConstants.colors.black
-                            }
+                            viewContainer: styles.pickerViewContainer,
+                            inputAndroid: styles.pickerInputAndroid,
+                            inputIOS: styles.pickerInputIOS,
+                            placeholder: styles.pickerPlaceholder
                         }}
                     />
                 </View>
@@ -211,7 +191,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
     }
 
     const renderSearchResult = () => {
-        const searchItems = searchResults.map(item => renderSearchItem(item))
+        const searchItems = searchResults.map((item, index) => renderSearchItem(item, index))
         return (
             <View>
                 {searchItems}
@@ -219,28 +199,28 @@ const HomeScreen = (props: IHomeScreenProps) => {
         )
     }
 
-    const renderSearchItem = (item: Media) => {
+    const renderSearchItem = (item: Media, index: number) => {
         return (
             <SearchItem
                 item={item}
                 onPress={viewItemDetails}
                 isLandscape={isLandscape}
+                key={index}
             />
         )
     }
-
 
     return (
         <SafeAreaView style={styles.centeredView}>
             <View style={styles.container}>
                 <SearchBar
                     placeholder="Discover"
-                    onChangeText={doSearch}
+                    onChangeText={updateSearch}
                     onCancel={cleanSearch}
                     onClear={cleanSearch}
                     value={search}
-                    containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
-                    inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
+                    containerStyle={[commonStyles.shadows, styles.searchContainer]}
+                    inputContainerStyle={{ backgroundColor: AppConstants.colors.white }}
                 />
 
                 {isLoading && <LoadingOverlay backColor={false} />}
@@ -307,5 +287,23 @@ const styles = StyleSheet.create({
     categoryHeader: {
         fontSize: normalize(25),
         alignSelf: 'center'
+    },
+    pickerViewContainer: {
+        justifyContent: 'center',
+        width: '100%',
+        flex: 1
+    },
+    pickerInputAndroid: {
+        fontSize: normalize(15),
+        color: AppConstants.colors.black
+    },
+    pickerInputIOS: {
+        fontSize: normalize(15),
+        color: AppConstants.colors.black,
+        textAlign: 'right'
+    },
+    pickerPlaceholder: {
+        fontSize: normalize(15),
+        color: AppConstants.colors.black
     }
 });

@@ -1,18 +1,18 @@
 export interface Media {
-    id: Number,
+    id: number,
     type: Movie | Serie,
     title: String,
     description: String,
-    popularity: Number,
+    popularity: number,
     date: String,
-    rate: Number,
+    rate: number,
     image: String
-    categories: Array<Number>
+    categories: Array<number>
     numVotes: number
 }
 
 export interface Category {
-    id: Number,
+    id: number,
     genre: string
 }
 

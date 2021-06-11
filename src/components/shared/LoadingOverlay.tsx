@@ -5,11 +5,11 @@ import AppConstants from '../../utils/AppConstants';
 
 interface ILoadingOverlayProps {
     color?: string;
-    size?: string;
+    size?: number | "large" | "small" | undefined;
     backColor?: boolean
 }
 
-export const LoadingOverlay = ({ size = "large", color = AppConstants.colors.gray , backColor = true}: ILoadingOverlayProps) => {
+export const LoadingOverlay = ({ size = "large", color = AppConstants.colors.black , backColor = true}: ILoadingOverlayProps) => {
 
     return (
         <View style={[styles.loadingOverlay, {backgroundColor: backColor ? AppConstants.colors.black : 'transparent'}]}>

@@ -4,9 +4,10 @@ import moviesTypes from '../types/mediaTypes';
 export interface IMediaReducerState {
   movies: Array<Media>;
   tvSeries: Array<Media>;
-  tvSeriesCategories: Array<{ id: Number, name: string }>;
-  moviesCategories: Array<{ id: Number, name: string }>;
-  selectedMedia: Media
+  tvSeriesCategories: Array<{ id: number, name: string }>;
+  moviesCategories: Array<{ id: number, name: string }>;
+  selectedMedia: Media,
+  listsLoaded: boolean
 }
 
 export const initialState: IMediaReducerState = {
@@ -14,7 +15,8 @@ export const initialState: IMediaReducerState = {
   tvSeries: [],
   moviesCategories: [],
   tvSeriesCategories: [],
-  selectedMedia: null
+  selectedMedia: null,
+  listsLoaded: false
 };
 
 const mediaReducer = (state: IMediaReducerState = initialState, action: any) => {
@@ -25,7 +27,8 @@ const mediaReducer = (state: IMediaReducerState = initialState, action: any) => 
         movies: action.data.movies,
         tvSeries: action.data.tvSeries,
         moviesCategories: action.data.moviesCategories,
-        tvSeriesCategories: action.data.tvSeriesCategories
+        tvSeriesCategories: action.data.tvSeriesCategories,
+        listsLoaded: true
       }
 
     case moviesTypes.SELECT_MEDIA:
