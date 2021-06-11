@@ -4,6 +4,8 @@ import AppConstants from '../../utils/AppConstants';
 import { normalize } from 'react-native-elements';
 import { commonStyles } from '../../styles/common';
 import StarRating from 'react-native-star-rating';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 interface ISearchItemProps {
     item: any;
@@ -22,7 +24,7 @@ export const SearchItem = (props: ISearchItemProps) => {
                 <Image
                     style={[
                         styles.image,
-                        {resizeMode: !props.isLandscape ? 'stretch' : 'cover' }
+                        { resizeMode: !props.isLandscape ? 'stretch' : 'cover' }
                     ]}
                     source={props.item.image ? { uri: props.item.image } : require('../../assets/images/no-image.jpeg')}
                 />
@@ -39,6 +41,10 @@ export const SearchItem = (props: ISearchItemProps) => {
                                 starSize={normalize(20)}
                             />
                             <Text style={styles.numVotes}>{props.item.numVotes}</Text>
+                            <View style={styles.favStar}>
+                                <Icon name="star-o" size={normalize(20)} />
+                            </View>
+
                         </View>
                     </View>
                 </View>
@@ -79,5 +85,10 @@ const styles = StyleSheet.create({
     numVotes: {
         fontSize: normalize(15),
         marginLeft: normalize(10)
+    },
+    favStar: {
+        width: '100%',
+        alignItems: 'flex-end',
+        flex: 1
     }
 });

@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     iconContainer: {
         flex: 1,
         alignItems: 'flex-start',
-
     },
     titleContainer: {
         flex: 4,

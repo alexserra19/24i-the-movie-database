@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, Modal, Image, Dimensions, ScrollView } from 'react-native';
 import AppConstants from '../utils/AppConstants';
 import { normalize } from 'react-native-elements';
@@ -33,6 +33,10 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
         }
     }, []);
 
+    const closeVideo = () => {
+        setDisplayVideo(false)
+    }
+
     return (
         <View style={styles.container}>
             <HeaderBar
@@ -52,7 +56,11 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
                     />
                     <TouchableOpacity
                         onPress={() => setDisplayVideo(true)}
-                        style={[styles.playButton, commonStyles.shadows]}>
+                        style={[
+                            styles.playButton,
+                            commonStyles.shadows,
+                            { right: isLandscape ? normalize(60) : normalize(20) }
+                        ]}>
                         <Text>
                             <Icon name="play" size={normalize(30)} color={AppConstants.colors.white} />
                         </Text>
@@ -60,12 +68,24 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
                 </View>
 
                 {displayVideo &&
-                    <Modal style={{backgroundColor: 'black'}}>
+                    <Modal>
+                        <TouchableOpacity
+                            onPress={closeVideo}
+                            style={{ position: 'absolute', top: 50, left: 10, zIndex: 99, elevation: 99 }}
+                        >
+
+                            <View style={[commonStyles.row, {alignItems:'center'}]}>
+                                <Icon name="arrow-left" size={normalize(20)} color={AppConstants.colors.white}/>
+                                <Text style={styles.textCloseVideo}>{media.title}</Text>
+                            </View>
+                        </TouchableOpacity>
                         <Video
                             source={require('../assets/video/big_buck_bunny.mp4')}
-                            controls={true}
-                            style={{ height: '100%', width: '100%' }}
+                            controls={false}
+                            style={styles.videoStyle}
+                            playInBackground={false}
                             fullscreenOrientation={'landscape'}
+                            resizeMode={'contain'}
                         />
                     </Modal>
                 }
@@ -114,7 +134,6 @@ const styles = StyleSheet.create({
         borderRadius: normalize(70),
         backgroundColor: AppConstants.colors.blue,
         position: 'absolute',
-        right: normalize(20),
         bottom: normalize(-30)
     },
     infoContainer: {
@@ -133,5 +152,15 @@ const styles = StyleSheet.create({
         fontSize: normalize(17),
         textAlign: 'justify',
         lineHeight: 28
+    },
+    videoStyle: {
+        height: '100%',
+        width: '100%',
+        backgroundColor: AppConstants.colors.black
+    },
+    textCloseVideo: {
+        color: AppConstants.colors.white, 
+        marginLeft: 10, 
+        fontSize: normalize(20)
     }
 });
