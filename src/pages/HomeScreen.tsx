@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions, ScrollView, Picker, FlatList } from 'react-native';
 import AppConstants from '../utils/AppConstants';
-import { normalize, SearchBar } from 'react-native-elements';
+import { ListItem, normalize, SearchBar } from 'react-native-elements';
 import { useDispatch, useSelector } from "react-redux";
 import { IsLoadingHoc } from "../components/HOCS/IsLoadingHOC";
 import * as RootNavigation from "../navigation/RootNavigation";
@@ -11,6 +11,8 @@ import { commonStyles } from '../styles/common';
 import { Category, Media } from '../utils/typings';
 import helpers from '../utils/helpers';
 import Carousel from 'react-native-snap-carousel';
+import SelectDropdown from 'react-native-select-dropdown'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -19,11 +21,14 @@ interface IHomeScreenProps {
 
 const HomeScreen = (props: IHomeScreenProps) => {
     const [search, updateSearch] = useState<string>('');
-    const movies = useSelector((store:any) => store.mediaReducer.movies);
-    const tvSeries = useSelector((store:any) => store.mediaReducer.tvSeries);
-    const moviesCategories = useSelector((store:any) => store.mediaReducer.moviesCategories);
-    const tvSeriesCategories = useSelector((store:any) => store.mediaReducer.tvSeriesCategories);
+    const movies = useSelector((store: any) => store.mediaReducer.movies);
+    const tvSeries = useSelector((store: any) => store.mediaReducer.tvSeries);
+    const moviesCategories = useSelector((store: any) => store.mediaReducer.moviesCategories);
+    const tvSeriesCategories = useSelector((store: any) => store.mediaReducer.tvSeriesCategories);
     const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
+    const [movieGenreSelected, setMovieGenreSelected] = useState(null);
+    const [tvSerieGenreSelected, setTvSerieGenreSelected] = useState(null);
+
 
 
     const dispatch = useDispatch()
@@ -57,14 +62,14 @@ const HomeScreen = (props: IHomeScreenProps) => {
     }
 
 
-    const renderPrincipalMovie = () => {
+    const renderPrincipalMovies = () => {
         const isLandscape = helpers.isLandscape()
         return (
             <Carousel
                 data={movies}
-                renderItem={renderItem}
+                renderItem={renderItemPrincipalMovie}
                 sliderWidth={screenWidth - normalize(isLandscape ? 110 : 20)}
-                itemWidth={screenWidth - normalize(70)}
+                itemWidth={screenWidth - normalize(100)}
             />
         )
     }
@@ -74,7 +79,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
         RootNavigation.navigate(AppConstants.routeName.details)
     }
 
-    const renderItem = ({ item }: any) => {
+    const renderItemPrincipalMovie = ({ item }: any) => {
         return (
             <TouchableOpacity
                 onPress={() => viewItemDetails(item)}
@@ -93,6 +98,65 @@ const HomeScreen = (props: IHomeScreenProps) => {
         );
     }
 
+    const renderCategoryItems = (
+        categoriesList: Array<Category>,
+        title: string,
+        updateCategorySelected: Function,
+        mediaList: Array<Media>
+    ) => {
+        return (
+            <View>
+                <View style={styles.categoriesContainer}>
+                    <Text style={styles.categoryHeader}>{title}</Text>
+                    <SelectDropdown
+                        data={categoriesList}
+                        defaultButtonText={'Select Category'}
+                        onSelect={(selectedItem: any) => {
+                            updateCategorySelected(selectedItem)
+                        }}
+                        buttonTextAfterSelection={(selectedItem: any) => {
+                            return selectedItem.genre
+                        }}
+                        rowTextForSelection={(item: any) => {
+                            return item.genre
+                        }}
+                        renderDropdownIcon={() => {
+                            return (
+                                <Icon name="angle-down" size={normalize(30)} color={AppConstants.colors.black} />
+                            )
+                        }}
+                        rowTextStyle={styles.dropDownText}
+                        buttonStyle={styles.dropDownStyle}
+                        buttonTextStyle={styles.dropDownText}
+                    />
+                </View>
+                <FlatList
+                    horizontal
+                    data={mediaList}
+                    renderItem={renderMediaListItem}
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>
+        )
+    }
+
+    const renderMediaListItem = ({ item }: any) => {
+        console.log('item', item)
+        return (
+            <TouchableOpacity
+                onPress={() => viewItemDetails(item)}
+            >
+                <View style={{ width: normalize(100), marginRight: 10, backgroundColor: AppConstants.colors.white, height: normalize(150) }}>
+                    <Image
+                        style={{ width: '100%', height: '60%', resizeMode: 'stretch' }}
+                        source={{ uri: item.image }}
+                    />
+                    <Text style={{padding: 3}}>{helpers.reduceText(item.title, 20)}</Text>
+                </View>
+
+            </TouchableOpacity>
+        );
+    }
     return (
         <SafeAreaView style={styles.centeredView}>
             <View style={styles.container}>
@@ -103,17 +167,20 @@ const HomeScreen = (props: IHomeScreenProps) => {
                     containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
                     inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
                 />
-                {!_.isEmpty(movies) && renderPrincipalMovie()}
-
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}>
-                        <Button
-                            title='aaa'
-                            onPress={() => RootNavigation.navigate(AppConstants.routeName.details)}
-                        >
-                        </Button>
-                    </View>
-                </View>
+                <ScrollView
+                    scrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {!_.isEmpty(movies) &&
+                        renderPrincipalMovies()
+                    }
+                    {!_.isEmpty(moviesCategories) &&
+                        renderCategoryItems(moviesCategories, "Movies", setMovieGenreSelected, movies)
+                    }
+                    {!_.isEmpty(tvSeriesCategories) &&
+                        renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieGenreSelected, tvSeries)
+                    }
+                </ScrollView>
             </View>
         </SafeAreaView>
     );
@@ -156,5 +223,21 @@ const styles = StyleSheet.create({
         backgroundColor: AppConstants.colors.black,
         padding: normalize(10),
         opacity: 0.8
+    },
+    dropDownStyle: {
+        width: '100%',
+        backgroundColor: 'transparent',
+        flex: 2
+    },
+    dropDownText: {
+        textAlign: 'right'
+    },
+    categoriesContainer: {
+        marginTop: normalize(20),
+        flexDirection: 'row',
+    },
+    categoryHeader: {
+        fontSize: normalize(25),
+        alignSelf: 'center'
     }
 });
