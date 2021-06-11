@@ -1,8 +1,6 @@
 import AppConstants from "../utils/AppConstants";
-import asyncStorageService from "./AsyncStorageService";
 import interceptorService from './InterceptorService'
 import configuration from "../api/config";
-import { Platform } from "react-native";
 import { Category, Media, Movie, Serie } from "../utils/typings";
 import MediaAdapter from "../utils/adapters/MediaAdapter";
 

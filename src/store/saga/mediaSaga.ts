@@ -1,10 +1,9 @@
 import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import moviesTypes from '../types/mediaTypes'
-import moviesActions from '../actions/mediaActions'
-import AppConstants from '../../utils/AppConstants';
-import AsyncStorageService from '../../services/AsyncStorageService';
 import MediaService from '../../services/MediaService';
 import mediaActions from '../actions/mediaActions';
+import _ from 'lodash';
+import helpers from '../../utils/helpers';
 
 
 export function* initialize() {
@@ -15,7 +14,10 @@ export function* initialize() {
         tvSeriesCategories: call(MediaService.getGenresByMediaType, "tv")
     });
 
-    yield put(mediaActions.initializeFinish(movies, tvSeries, moviesCategories, tvSeriesCategories))
+    if(_.isEmpty(movies) || _.isEmpty(tvSeries) || _.isEmpty(moviesCategories) || _.isEmpty(tvSeriesCategories)) {
+        yield call (helpers.handleNetworkError)
+    }
+    else yield put(mediaActions.initializeFinish(movies, tvSeries, moviesCategories, tvSeriesCategories))
 }
 
 

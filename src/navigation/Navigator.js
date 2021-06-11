@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import HomeScreen from '../pages/HomeScreen'
 import DetailsScreen from '../pages/DetailsScreen'
-
 
 Stack = createStackNavigator();
 

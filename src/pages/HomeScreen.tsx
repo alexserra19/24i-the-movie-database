@@ -20,7 +20,6 @@ import { CustomModal } from '../components/shared/CustomModal';
 
 interface IHomeScreenProps {
     navigation: any;
-    setLoading: Function
 }
 
 const HomeScreen = (props: IHomeScreenProps) => {
@@ -103,7 +102,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 <View>
                     {renderPrincipalMovies()}
                     {renderCategoryItems(moviesCategories, "Movies", setMovieCategorySelected, movies, movieCategorySelected)}
-                    { renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieCategorySelected, tvSeries, tvSerieCategorySelected)}
+                    {renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieCategorySelected, tvSeries, tvSerieCategorySelected)}
                 </View>
             ) : null
         )
@@ -142,7 +141,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
         title: string,
         updateCategorySelected: Function,
         mediaList: Array<Media>,
-        categorySelected: number
+        categorySelected: any
     ) => {
         let selectItems = categoriesList.map((item) => ({ label: item.genre, value: item.id }))
         return (

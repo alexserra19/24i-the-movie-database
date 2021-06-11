@@ -1,8 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AsyncStorageService {
-  
-
     async getItem(key: string) {
         const value = await AsyncStorage.getItem(key)
         return value ? JSON.parse(value) : null
@@ -19,7 +17,6 @@ class AsyncStorageService {
             await AsyncStorage.removeItem(key)
         }
     }
-    
 }
 
 export default new AsyncStorageService();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, ViewStyle } from 'react-native';
 import AppConstants from '../../utils/AppConstants';
 import { normalize } from 'react-native-elements';

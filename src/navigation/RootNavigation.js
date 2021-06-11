@@ -7,7 +7,6 @@ export const navigationRef = React.createRef();
 
 export function navigate(name, params) {
   if (isReadyRef.current && navigationRef.current) {
-    // Perform navigation if the app has mounted
     navigationRef.current.navigate(name, params);
   } else {
     //navigator is not mounted
@@ -17,7 +16,6 @@ export function navigate(name, params) {
 export function goBack(){
   navigationRef.current.goBack();
 }
-
 
 export function push(...args) {
     navigationRef.current?.dispatch(StackActions.push(...args));

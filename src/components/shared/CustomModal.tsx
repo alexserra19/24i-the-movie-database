@@ -1,12 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, Platform, TouchableOpacity, ViewStyle, Modal } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
 import AppConstants from '../../utils/AppConstants';
 import { normalize } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { commonStyles } from '../../styles/common';
-import * as RootNavigation from '../../Navigation/RootNavigation';
-
-
 
 interface ICustomModalProps {
     title: string;

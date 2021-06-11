@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, Image, TouchableOpacity, ViewStyle } from 'reac
 import AppConstants from '../../utils/AppConstants';
 import { normalize } from 'react-native-elements';
 import { commonStyles } from '../../styles/common';
-import helpers from '../../utils/helpers';
 import StarRating from 'react-native-star-rating';
 
 interface ISearchItemProps {

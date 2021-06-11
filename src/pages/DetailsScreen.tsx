@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, Modal, Image, Dimensions, ScrollView } from 'react-native';
 import AppConstants from '../utils/AppConstants';
 import { normalize } from 'react-native-elements';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { IsLoadingHoc } from "../components/HOCS/IsLoadingHOC";
 import { HeaderBar } from "../components/shared/HeaderBar"
 import * as RootNavigation from "../navigation/RootNavigation";
@@ -19,11 +19,7 @@ interface IDetailsScreenProps {
 const DetailsScreen = (props: IDetailsScreenProps) => {
     const [isLandscape, setIsLandscape] = useState<boolean>(helpers.isLandscape());
     const [displayVideo, setDisplayVideo] = useState<boolean>(false);
-
     const media = useSelector((store: any) => store.mediaReducer.selectedMedia);
-
-    const dispatch = useDispatch()
-
 
     useEffect(() => {
         Dimensions.addEventListener('change', () => {

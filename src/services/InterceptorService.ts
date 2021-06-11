@@ -1,6 +1,4 @@
-import { Alert } from "react-native";
-import AppConstants from "../utils/AppConstants";
-import AsyncStorageService from './AsyncStorageService';
+import helpers from "../utils/helpers";
 
 const interceptor = {
     async doRequest(url: string, body = null, method = 'GET', contentType = 'application/json', formData = false) {
@@ -18,19 +16,8 @@ const interceptor = {
             return responseJson;
 
         } catch (error) {
-            this.handleNetworkError()
+            helpers.handleNetworkError()
         }
-    },
-
-    handleNetworkError() {
-        Alert.alert(
-            "Error de red",
-            "Ha habido un error, por favor vuelva a intentarlo",
-            [
-                { text: "De acuerdo" }
-            ],
-            { cancelable: false }
-        )
     },
 
     async responseConvertToJson(response: any) {
