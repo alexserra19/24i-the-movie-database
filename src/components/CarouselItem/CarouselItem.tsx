@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, ViewStyle } from 'react-native';
 import AppConstants from '../../utils/AppConstants';
 import { normalize } from 'react-native-elements';
@@ -8,23 +8,27 @@ import helpers from '../../utils/helpers';
 interface ICarouselItemProps {
     item: any;
     onPress: (item: any) => void;
-    containerStyle?: ViewStyle
+    containerStyle?: ViewStyle;
+    isLandscape?: Boolean
 }
 
 export const CarouselItem = (props: ICarouselItemProps) => {
-
     return (
         <TouchableOpacity
             onPress={() => props.onPress(props.item)}
         >
             <View style={[commonStyles.row, styles.principalMovie, commonStyles.shadows]}>
                 <Image
-                    style={{ width: '100%', height: '100%', resizeMode: 'stretch' }}
+                    style={{ width: '100%', height: '100%', resizeMode: !props.isLandscape ? 'stretch' : 'cover' }}
                     source={{ uri: props.item.image }}
                 />
                 <View style={styles.principalMovieTextContainer}>
-                    <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(props.item.description, 20)}</Text>
-                    <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(props.item.title, 20)}</Text>
+                    <Text style={{ color: AppConstants.colors.white }}>
+                        {helpers.reduceText(props.item.description, props.isLandscape ? 80 : 20)}
+                    </Text>
+                    <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>
+                        {helpers.reduceText(props.item.title, props.isLandscape ? 80 : 20)}
+                    </Text>
                 </View>
             </View>
         </TouchableOpacity>

@@ -15,6 +15,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { CarouselItem } from '../components/CarouselItem/CarouselItem';
 import { MediaListItem } from '../components/MediaListItem/MediaListItem';
+import RNPickerSelect from 'react-native-picker-select';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -30,6 +31,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
     const [movieCategorySelected, setMovieCategorySelected] = useState(null);
     const [tvSerieCategorySelected, setTvSerieCategorySelected] = useState(null);
+    const [isLandscape, setIsLandscape] = useState<Boolean>(helpers.isLandscape());
 
     const dispatch = useDispatch()
 
@@ -39,11 +41,13 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
         Dimensions.addEventListener('change', () => {
             updateScreenWidth(Dimensions.get('window').width)
+            setIsLandscape(helpers.isLandscape())
         })
 
         return () => {
             Dimensions.removeEventListener('change', () => {
                 updateScreenWidth(Dimensions.get('window').width)
+                setIsLandscape(helpers.isLandscape())
             })
         }
     }, []);
@@ -83,6 +87,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
             <CarouselItem
                 item={item}
                 onPress={viewItemDetails}
+                isLandscape={isLandscape}
             />
         );
     }
@@ -92,32 +97,41 @@ const HomeScreen = (props: IHomeScreenProps) => {
         title: string,
         updateCategorySelected: Function,
         mediaList: Array<Media>,
-        categorySelected: Category
+        categorySelected: number
     ) => {
+        let selectItems = categoriesList.map((item) => ({ label: item.genre, value: item.id }))
         return (
             <View>
                 <View style={styles.categoriesContainer}>
                     <Text style={styles.categoryHeader}>{title}</Text>
-                    <SelectDropdown
-                        data={categoriesList}
-                        defaultButtonText={'Select Category'}
-                        onSelect={(selectedItem: any) => {
-                            updateCategorySelected(selectedItem)
+                    <RNPickerSelect
+                        onValueChange={(value) => updateCategorySelected(value)}
+                        items={selectItems}
+                        placeholder={{
+                            label: 'Select a Category',
+                            value: null,
+                            color: AppConstants.colors.black
                         }}
-                        buttonTextAfterSelection={(selectedItem: any) => {
-                            return selectedItem.genre
+                        style={{
+                            viewContainer: { 
+                                justifyContent: 'center',
+                                width: '100%',
+                                flex: 1
+                            },
+                            inputAndroid: {
+                                fontSize: normalize(15),
+                                color: AppConstants.colors.black
+                            },
+                            inputIOS: {
+                                fontSize: normalize(15),
+                                color: AppConstants.colors.black,
+                                textAlign: 'right'
+                            },
+                            placeholder: {
+                                fontSize: normalize(15),
+                                color: AppConstants.colors.black
+                            }
                         }}
-                        rowTextForSelection={(item: any) => {
-                            return item.genre
-                        }}
-                        renderDropdownIcon={() => {
-                            return (
-                                <Icon name="angle-down" size={normalize(30)} color={AppConstants.colors.black} />
-                            )
-                        }}
-                        rowTextStyle={styles.dropDownText}
-                        buttonStyle={styles.dropDownStyle}
-                        buttonTextStyle={styles.dropDownText}
                     />
                 </View>
                 <FlatList
@@ -130,13 +144,14 @@ const HomeScreen = (props: IHomeScreenProps) => {
         )
     }
 
-    const renderMediaListItem = ({ item }: any, categoriesList: Array<Category>, categorySelected: Category) => {
-        
+    const renderMediaListItem = ({ item }: any, categoriesList: Array<Category>, categorySelected: number) => {
+
         const filteredArray = categoriesList.filter(value => item.categories.includes(value.id));
         let categories = filteredArray.map((item) => item.genre).join(', ')
 
+
         return (
-            _.isNull(categorySelected) || item.categories.includes(categorySelected.id) ?
+            _.isNull(categorySelected) || item.categories.includes(categorySelected) ?
                 <MediaListItem
                     item={item}
                     onPress={viewItemDetails}
@@ -210,6 +225,7 @@ const styles = StyleSheet.create({
     },
     categoriesContainer: {
         marginTop: normalize(20),
+        marginBottom: normalize(10),
         flexDirection: 'row',
     },
     categoryHeader: {
