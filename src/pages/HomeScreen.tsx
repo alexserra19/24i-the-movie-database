@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions } from 'react-native';
 import AppConstants from '../utils/AppConstants';
 import { normalize, SearchBar } from 'react-native-elements';
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import _ from "lodash"
 import { commonStyles } from '../styles/common';
 import { Category, Media } from '../utils/typings';
 import helpers from '../utils/helpers';
+import Carousel from 'react-native-snap-carousel';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -18,10 +19,11 @@ interface IHomeScreenProps {
 
 const HomeScreen = (props: IHomeScreenProps) => {
     const [search, updateSearch] = useState<string>('');
-    const movies = useSelector(store => store.mediaReducer.movies);
-    const tvSeries = useSelector(store => store.mediaReducer.tvSeries);
-    const moviesCategories = useSelector(store => store.mediaReducer.moviesCategories);
-    const tvSeriesCategories = useSelector(store => store.mediaReducer.tvSeriesCategories);
+    const movies = useSelector((store:any) => store.mediaReducer.movies);
+    const tvSeries = useSelector((store:any) => store.mediaReducer.tvSeries);
+    const moviesCategories = useSelector((store:any) => store.mediaReducer.moviesCategories);
+    const tvSeriesCategories = useSelector((store:any) => store.mediaReducer.tvSeriesCategories);
+    const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
 
 
     const dispatch = useDispatch()
@@ -30,6 +32,16 @@ const HomeScreen = (props: IHomeScreenProps) => {
     useEffect(() => {
         props.setLoading(true)
         dispatch(mediaActions.initializeStart())
+
+        Dimensions.addEventListener('change', () => {
+            updateScreenWidth(Dimensions.get('window').width)
+        })
+
+        return () => {
+            Dimensions.removeEventListener('change', () => {
+                updateScreenWidth(Dimensions.get('window').width)
+            })
+        }
     }, []);
 
 
@@ -38,7 +50,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
         console.log('tvSeries', tvSeries)
         console.log('moviesCategories', moviesCategories)
         console.log('tvSeriesCategories', tvSeriesCategories)
-
 
         if (!_.isEmpty(movies) && !_.isEmpty(tvSeries) && !_.isEmpty(moviesCategories)) {
             props.setLoading(false)
@@ -53,25 +64,44 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
 
     const renderPrincipalMovie = () => {
-        const movieIndex = Math.round(Math.random() * movies.length);
+        const isLandscape = helpers.isLandscape()
         return (
-            <View style={[commonStyles.row, styles.principalMovie, commonStyles.shadows]}>
-                <Image
-                    style={{ width: '100%', height: '100%', resizeMode: 'stretch' }}
-                    source={{ uri: movies[movieIndex].image }}
-                />
-                <View style={styles.principalMovieTextContainer}>
-                    <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(movies[movieIndex].description, 40)}</Text>
-                    <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(movies[movieIndex].title, 30)}</Text>
-                </View>
-            </View>
+            <Carousel
+                data={movies}
+                renderItem={renderItem}
+                sliderWidth={screenWidth - normalize(isLandscape ? 110 : 20)}
+                itemWidth={screenWidth - normalize(70)}
+            />
         )
+    }
+
+    const viewItemDetails = (item: Media) => {
+        dispatch(mediaActions.selectMedia(item))
+        RootNavigation.navigate(AppConstants.routeName.details)
+    }
+
+    const renderItem = ({ item }: any) => {
+        return (
+            <TouchableOpacity
+                onPress={() => viewItemDetails(item)}
+            >
+                <View style={[commonStyles.row, styles.principalMovie, commonStyles.shadows]}>
+                    <Image
+                        style={{ width: '100%', height: '100%', resizeMode: 'stretch' }}
+                        source={{ uri: item.image }}
+                    />
+                    <View style={styles.principalMovieTextContainer}>
+                        <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(item.description, 20)}</Text>
+                        <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(item.title, 20)}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
     }
 
     return (
         <SafeAreaView style={styles.centeredView}>
             <View style={styles.container}>
-
                 <SearchBar
                     placeholder="Discover"
                     onChangeText={doSearch}
@@ -88,13 +118,10 @@ const HomeScreen = (props: IHomeScreenProps) => {
                             onPress={() => RootNavigation.navigate(AppConstants.routeName.details)}
                         >
                         </Button>
-
                     </View>
                 </View>
             </View>
-
         </SafeAreaView>
-
     );
 }
 
@@ -126,9 +153,8 @@ const styles = StyleSheet.create({
     principalMovie: {
         marginTop: normalize(20),
         height: normalize(200),
-        width: '100%'
+        width: '100%',
     },
-
     principalMovieTextContainer: {
         position: 'absolute',
         left: 0,
@@ -137,5 +163,4 @@ const styles = StyleSheet.create({
         padding: normalize(10),
         opacity: 0.8
     }
-
 });

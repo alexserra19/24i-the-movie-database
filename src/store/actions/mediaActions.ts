@@ -19,6 +19,12 @@ const mediaActions: IMediaActions = {
       data: { movies, tvSeries, moviesCategories, tvSeriesCategories }
     };
   },
+  selectMedia(media: Media) {
+    return {
+      type: moviesTypes.SELECT_MEDIA,
+      data: media
+    }
+  }
 }
 
 export default mediaActions;
@@ -31,4 +37,5 @@ export interface IMediaActions {
     moviesCategories: Array<Category>,
     tvSeriesCategories: Array<Category>
   ) => Action;
+  selectMedia: (media: Media) => Action;
 }
