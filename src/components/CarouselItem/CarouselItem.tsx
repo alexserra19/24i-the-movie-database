@@ -9,7 +9,7 @@ interface ICarouselItemProps {
     item: any;
     onPress: (item: any) => void;
     containerStyle?: ViewStyle;
-    isLandscape?: Boolean
+    isLandscape?: boolean
 }
 
 export const CarouselItem = (props: ICarouselItemProps) => {

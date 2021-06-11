@@ -3,9 +3,9 @@ import { LoadingOverlay } from "../shared/LoadingOverlay";
 
 export const IsLoadingHoc = (WrappedComponent: any) => {
     function HOC(props:any) {
-        const [isLoading, setLoading] = useState<Boolean>(false);
+        const [isLoading, setLoading] = useState<boolean>(false);
 
-        const setLoadingState = (isComponentLoading: Boolean) => {
+        const setLoadingState = (isComponentLoading: boolean) => {
             setLoading(isComponentLoading)
         }
 

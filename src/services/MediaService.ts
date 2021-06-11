@@ -31,6 +31,7 @@ class MediaService {
     }
 
     async searchMedia(query: string): Promise<Array<Media>> {
+        console.log('query', query)
         let urlMedia = configuration.routes.searchMedia + "&query=" + query
         let url = AppConstants.domain + urlMedia.replace('{key}', AppConstants.apiKey);
         let response = await interceptorService.doRequest(url);

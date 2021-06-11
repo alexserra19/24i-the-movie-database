@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions, ScrollView, Picker, FlatList } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, TextInput, Platform, Alert, Button, Image, Dimensions, ScrollView, Picker, FlatList, Modal } from 'react-native';
 import AppConstants from '../utils/AppConstants';
 import { ListItem, normalize, SearchBar } from 'react-native-elements';
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { LoadingOverlay } from '../components/shared/LoadingOverlay';
 import MediaService from '../services/MediaService';
 import { SearchItem } from '../components/SearchItem/SearchItem';
+import { CustomModal } from '../components/shared/CustomModal';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -34,9 +35,12 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
     const [movieCategorySelected, setMovieCategorySelected] = useState(null);
     const [tvSerieCategorySelected, setTvSerieCategorySelected] = useState(null);
-    const [isLandscape, setIsLandscape] = useState<Boolean>(helpers.isLandscape());
-    const [isLoading, setIsLoading] = useState<Boolean>(false);
+    const [isLandscape, setIsLandscape] = useState<boolean>(helpers.isLandscape());
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchResults, setSearchResults] = useState<Array<Media>>([]);
+    const [showNoResultsModal, setShowNoResultsModal] = useState<boolean>(false);
+    const [timeoutSearch, setTimeoutSearch] = useState<any>(0);
+
 
     const dispatch = useDispatch()
 
@@ -66,29 +70,37 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
 
     const doSearch = (text: string) => {
-        console.log('text', text)
         updateSearch(text)
-        if (_.isEmpty(text)) setIsLoading(false)
-        else startSearch(text)
+        
+        if (_.isEmpty(text)) cleanSearch()
+
+        else {
+            if (timeoutSearch) clearTimeout(timeoutSearch)
+            const timeout = setTimeout(() => { startSearch(text) }, 100);
+            setTimeoutSearch(timeout)
+        }
     }
 
-    const cancelSearch = () => {
+    const cleanSearch = () => {
         updateSearch('')
+        setSearchResults([])
         setIsLoading(false)
     }
 
     const startSearch = async (text: string) => {
+
         setIsLoading(true)
+
         const data = await MediaService.searchMedia(text)
 
-        console.log('dataaaaaa', data)
-
-        if (data) {
-            setIsLoading(false)
-            setSearchResults(data)
+        if (!_.isEmpty(data)) setSearchResults(data)
+        else {
+            cleanSearch()
+            setShowNoResultsModal(true)
         }
-    }
+        setIsLoading(false)
 
+    }
 
     const renderHomeContent = () => {
         const infoLoaded = !_.isEmpty(movies) && !_.isEmpty(moviesCategories) && !_.isEmpty(tvSeriesCategories)
@@ -200,7 +212,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     const renderSearchResult = () => {
         const searchItems = searchResults.map(item => renderSearchItem(item))
-        return(
+        return (
             <View>
                 {searchItems}
             </View>
@@ -212,6 +224,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
             <SearchItem
                 item={item}
                 onPress={viewItemDetails}
+                isLandscape={isLandscape}
             />
         )
     }
@@ -223,8 +236,8 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 <SearchBar
                     placeholder="Discover"
                     onChangeText={doSearch}
-                    onCancel={cancelSearch}
-                    onClear={cancelSearch}
+                    onCancel={cleanSearch}
+                    onClear={cleanSearch}
                     value={search}
                     containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
                     inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
@@ -241,6 +254,13 @@ const HomeScreen = (props: IHomeScreenProps) => {
                     {_.isEmpty(searchResults) && !isLoading && renderHomeContent()}
                 </ScrollView>
             </View>
+
+            <CustomModal
+                title={'No Results Found'}
+                message={"Hmmmm, we're not getting any results. Our bad, try another search"}
+                visible={showNoResultsModal}
+                onPress={() => setShowNoResultsModal(false)}
+            />
         </SafeAreaView>
     );
 }

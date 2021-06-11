@@ -17,8 +17,8 @@ interface IDetailsScreenProps {
 }
 
 const DetailsScreen = (props: IDetailsScreenProps) => {
-    const [isLandscape, setIsLandscape] = useState<Boolean>(helpers.isLandscape());
-    const [displayVideo, setDisplayVideo] = useState<Boolean>(false);
+    const [isLandscape, setIsLandscape] = useState<boolean>(helpers.isLandscape());
+    const [displayVideo, setDisplayVideo] = useState<boolean>(false);
 
     const media = useSelector((store: any) => store.mediaReducer.selectedMedia);
 
@@ -36,8 +36,6 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
             })
         }
     }, []);
-
-    console.log('displayVideo', displayVideo)
 
     return (
         <View style={styles.container}>
@@ -117,7 +115,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         borderRadius: normalize(70),
-        backgroundColor: '#409ff7',
+        backgroundColor: AppConstants.colors.blue,
         position: 'absolute',
         right: normalize(20),
         bottom: normalize(-30)
