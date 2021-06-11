@@ -13,6 +13,8 @@ import helpers from '../utils/helpers';
 import Carousel from 'react-native-snap-carousel';
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { CarouselItem } from '../components/CarouselItem/CarouselItem';
+import { MediaListItem } from '../components/MediaListItem/MediaListItem';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -26,13 +28,10 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const moviesCategories = useSelector((store: any) => store.mediaReducer.moviesCategories);
     const tvSeriesCategories = useSelector((store: any) => store.mediaReducer.tvSeriesCategories);
     const [screenWidth, updateScreenWidth] = useState<number>(Dimensions.get('window').width);
-    const [movieGenreSelected, setMovieGenreSelected] = useState(null);
-    const [tvSerieGenreSelected, setTvSerieGenreSelected] = useState(null);
-
-
+    const [movieCategorySelected, setMovieCategorySelected] = useState(null);
+    const [tvSerieCategorySelected, setTvSerieCategorySelected] = useState(null);
 
     const dispatch = useDispatch()
-
 
     useEffect(() => {
         props.setLoading(true)
@@ -81,20 +80,10 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     const renderItemPrincipalMovie = ({ item }: any) => {
         return (
-            <TouchableOpacity
-                onPress={() => viewItemDetails(item)}
-            >
-                <View style={[commonStyles.row, styles.principalMovie, commonStyles.shadows]}>
-                    <Image
-                        style={{ width: '100%', height: '100%', resizeMode: 'stretch' }}
-                        source={{ uri: item.image }}
-                    />
-                    <View style={styles.principalMovieTextContainer}>
-                        <Text style={{ color: AppConstants.colors.white }}>{helpers.reduceText(item.description, 20)}</Text>
-                        <Text style={{ color: AppConstants.colors.white, fontSize: normalize(20) }}>{helpers.reduceText(item.title, 20)}</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
+            <CarouselItem
+                item={item}
+                onPress={viewItemDetails}
+            />
         );
     }
 
@@ -102,7 +91,8 @@ const HomeScreen = (props: IHomeScreenProps) => {
         categoriesList: Array<Category>,
         title: string,
         updateCategorySelected: Function,
-        mediaList: Array<Media>
+        mediaList: Array<Media>,
+        categorySelected: Category
     ) => {
         return (
             <View>
@@ -133,30 +123,29 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 <FlatList
                     horizontal
                     data={mediaList}
-                    renderItem={renderMediaListItem}
+                    renderItem={(item) => renderMediaListItem(item, categoriesList, categorySelected)}
                     showsHorizontalScrollIndicator={false}
                 />
             </View>
         )
     }
 
-    const renderMediaListItem = ({ item }: any) => {
-        console.log('item', item)
-        return (
-            <TouchableOpacity
-                onPress={() => viewItemDetails(item)}
-            >
-                <View style={{ width: normalize(100), marginRight: 10, backgroundColor: AppConstants.colors.white, height: normalize(150) }}>
-                    <Image
-                        style={{ width: '100%', height: '60%', resizeMode: 'stretch' }}
-                        source={{ uri: item.image }}
-                    />
-                    <Text style={{padding: 3}}>{helpers.reduceText(item.title, 20)}</Text>
-                </View>
+    const renderMediaListItem = ({ item }: any, categoriesList: Array<Category>, categorySelected: Category) => {
+        
+        const filteredArray = categoriesList.filter(value => item.categories.includes(value.id));
+        let categories = filteredArray.map((item) => item.genre).join(', ')
 
-            </TouchableOpacity>
-        );
+        return (
+            _.isNull(categorySelected) || item.categories.includes(categorySelected.id) ?
+                <MediaListItem
+                    item={item}
+                    onPress={viewItemDetails}
+                    categories={categories}
+                /> : null
+        )
     }
+
+
     return (
         <SafeAreaView style={styles.centeredView}>
             <View style={styles.container}>
@@ -175,10 +164,10 @@ const HomeScreen = (props: IHomeScreenProps) => {
                         renderPrincipalMovies()
                     }
                     {!_.isEmpty(moviesCategories) &&
-                        renderCategoryItems(moviesCategories, "Movies", setMovieGenreSelected, movies)
+                        renderCategoryItems(moviesCategories, "Movies", setMovieCategorySelected, movies, movieCategorySelected)
                     }
                     {!_.isEmpty(tvSeriesCategories) &&
-                        renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieGenreSelected, tvSeries)
+                        renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieCategorySelected, tvSeries, tvSerieCategorySelected)
                     }
                 </ScrollView>
             </View>
@@ -210,19 +199,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: '100%',
         marginBottom: normalize(30)
-    },
-    principalMovie: {
-        marginTop: normalize(20),
-        height: normalize(200),
-        width: '100%',
-    },
-    principalMovieTextContainer: {
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        backgroundColor: AppConstants.colors.black,
-        padding: normalize(10),
-        opacity: 0.8
     },
     dropDownStyle: {
         width: '100%',
