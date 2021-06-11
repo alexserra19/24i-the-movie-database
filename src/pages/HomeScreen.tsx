@@ -16,6 +16,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { CarouselItem } from '../components/CarouselItem/CarouselItem';
 import { MediaListItem } from '../components/MediaListItem/MediaListItem';
 import RNPickerSelect from 'react-native-picker-select';
+import { LoadingOverlay } from '../components/shared/LoadingOverlay';
+import MediaService from '../services/MediaService';
+import { SearchItem } from '../components/SearchItem/SearchItem';
 
 interface IHomeScreenProps {
     navigation: any;
@@ -32,11 +35,13 @@ const HomeScreen = (props: IHomeScreenProps) => {
     const [movieCategorySelected, setMovieCategorySelected] = useState(null);
     const [tvSerieCategorySelected, setTvSerieCategorySelected] = useState(null);
     const [isLandscape, setIsLandscape] = useState<Boolean>(helpers.isLandscape());
+    const [isLoading, setIsLoading] = useState<Boolean>(false);
+    const [searchResults, setSearchResults] = useState<Array<Media>>([]);
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        props.setLoading(true)
+        setIsLoading(true)
         dispatch(mediaActions.initializeStart())
 
         Dimensions.addEventListener('change', () => {
@@ -55,13 +60,47 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
     useEffect(() => {
         if (!_.isEmpty(movies) && !_.isEmpty(tvSeries) && !_.isEmpty(moviesCategories)) {
-            props.setLoading(false)
+            setIsLoading(false)
         }
     }, [movies, tvSeries]);
 
 
     const doSearch = (text: string) => {
+        console.log('text', text)
         updateSearch(text)
+        if (_.isEmpty(text)) setIsLoading(false)
+        else startSearch(text)
+    }
+
+    const cancelSearch = () => {
+        updateSearch('')
+        setIsLoading(false)
+    }
+
+    const startSearch = async (text: string) => {
+        setIsLoading(true)
+        const data = await MediaService.searchMedia(text)
+
+        console.log('dataaaaaa', data)
+
+        if (data) {
+            setIsLoading(false)
+            setSearchResults(data)
+        }
+    }
+
+
+    const renderHomeContent = () => {
+        const infoLoaded = !_.isEmpty(movies) && !_.isEmpty(moviesCategories) && !_.isEmpty(tvSeriesCategories)
+        return (
+            infoLoaded ? (
+                <View>
+                    {renderPrincipalMovies()}
+                    {renderCategoryItems(moviesCategories, "Movies", setMovieCategorySelected, movies, movieCategorySelected)}
+                    { renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieCategorySelected, tvSeries, tvSerieCategorySelected)}
+                </View>
+            ) : null
+        )
     }
 
 
@@ -113,7 +152,7 @@ const HomeScreen = (props: IHomeScreenProps) => {
                             color: AppConstants.colors.black
                         }}
                         style={{
-                            viewContainer: { 
+                            viewContainer: {
                                 justifyContent: 'center',
                                 width: '100%',
                                 flex: 1
@@ -122,12 +161,12 @@ const HomeScreen = (props: IHomeScreenProps) => {
                                 fontSize: normalize(15),
                                 color: AppConstants.colors.black
                             },
-                            inputIOS: {
+                            inputIOS: {
                                 fontSize: normalize(15),
                                 color: AppConstants.colors.black,
                                 textAlign: 'right'
                             },
-                            placeholder: {
+                            placeholder: {
                                 fontSize: normalize(15),
                                 color: AppConstants.colors.black
                             }
@@ -149,7 +188,6 @@ const HomeScreen = (props: IHomeScreenProps) => {
         const filteredArray = categoriesList.filter(value => item.categories.includes(value.id));
         let categories = filteredArray.map((item) => item.genre).join(', ')
 
-
         return (
             _.isNull(categorySelected) || item.categories.includes(categorySelected) ?
                 <MediaListItem
@@ -160,6 +198,24 @@ const HomeScreen = (props: IHomeScreenProps) => {
         )
     }
 
+    const renderSearchResult = () => {
+        const searchItems = searchResults.map(item => renderSearchItem(item))
+        return(
+            <View>
+                {searchItems}
+            </View>
+        )
+    }
+
+    const renderSearchItem = (item: Media) => {
+        return (
+            <SearchItem
+                item={item}
+                onPress={viewItemDetails}
+            />
+        )
+    }
+
 
     return (
         <SafeAreaView style={styles.centeredView}>
@@ -167,30 +223,29 @@ const HomeScreen = (props: IHomeScreenProps) => {
                 <SearchBar
                     placeholder="Discover"
                     onChangeText={doSearch}
+                    onCancel={cancelSearch}
+                    onClear={cancelSearch}
                     value={search}
                     containerStyle={[commonStyles.shadows, styles.searchContainer, { zIndex: -99 }]}
                     inputContainerStyle={{ backgroundColor: AppConstants.colors.white, zIndex: -99 }}
                 />
+
+                {isLoading && <LoadingOverlay backColor={false} />}
+
                 <ScrollView
                     scrollEnabled={true}
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ alignContent: 'center' }}
                 >
-                    {!_.isEmpty(movies) &&
-                        renderPrincipalMovies()
-                    }
-                    {!_.isEmpty(moviesCategories) &&
-                        renderCategoryItems(moviesCategories, "Movies", setMovieCategorySelected, movies, movieCategorySelected)
-                    }
-                    {!_.isEmpty(tvSeriesCategories) &&
-                        renderCategoryItems(tvSeriesCategories, "TV Series", setTvSerieCategorySelected, tvSeries, tvSerieCategorySelected)
-                    }
+                    {!_.isEmpty(searchResults) && renderSearchResult()}
+                    {_.isEmpty(searchResults) && !isLoading && renderHomeContent()}
                 </ScrollView>
             </View>
         </SafeAreaView>
     );
 }
 
-export default IsLoadingHoc(HomeScreen);
+export default HomeScreen;
 
 
 const styles = StyleSheet.create({
@@ -205,6 +260,7 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         padding: normalize(10),
+        flex: 1
     },
     searchContainer: {
         padding: 5,

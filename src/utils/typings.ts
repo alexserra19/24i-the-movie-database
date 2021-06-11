@@ -8,6 +8,7 @@ export interface Media {
     rate: Number,
     image: String
     categories: Array<Number>
+    numVotes: number
 }
 
 export interface Category {

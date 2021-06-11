@@ -3,19 +3,20 @@ import { Category, Media, Movie, Serie } from "../typings";
 
 class MediaAdapter {
 
-    JSONToMediaList(mediaList: Array<any>, type: Movie | Serie): Array<Media> {
+    JSONToMediaList(mediaList: Array<any>, type: Movie | Serie | null): Array<Media> {
         let mediaListAdapted = mediaList.map((item) => {
             return (
                 {
                     id: item.id,
-                    type: type,
+                    type: type ? type : item.media_type,
                     title: item.title || item.name,
                     description: item.overview,
                     popularity: item.popularity,
                     date: item.release_date || item.first_air_date,
                     rate: item.vote_average,
-                    image: (AppConstants.imageUrl + item.poster_path).replace('http', 'https'),
-                    categories: item.genre_ids
+                    image: item.poster_path ? (AppConstants.imageUrl + item.poster_path) : '',
+                    categories: item.genre_ids,
+                    numVotes: item.vote_count
                 }
             )
         })

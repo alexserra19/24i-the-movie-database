@@ -5,13 +5,14 @@ import AppConstants from '../../utils/AppConstants';
 
 interface ILoadingOverlayProps {
     color?: string;
-    size?: string
+    size?: string;
+    backColor?: boolean
 }
 
-export const LoadingOverlay = ({ size = "large", color = AppConstants.colors.white }: ILoadingOverlayProps) => {
+export const LoadingOverlay = ({ size = "large", color = AppConstants.colors.gray , backColor = true}: ILoadingOverlayProps) => {
 
     return (
-        <View style={styles.loadingOverlay}>
+        <View style={[styles.loadingOverlay, {backgroundColor: backColor ? AppConstants.colors.black : 'transparent'}]}>
             <ActivityIndicator size={size} color={color} />
         </View>
     );
@@ -27,7 +28,6 @@ const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         alignItems: 'center',
-        backgroundColor: 'black',
         opacity: 0.4,
         zIndex: 99,
         elevation: 9
