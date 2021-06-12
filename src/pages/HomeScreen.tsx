@@ -111,12 +111,11 @@ const HomeScreen = (props: IHomeScreenProps) => {
 
 
     const renderPrincipalMovies = () => {
-        const isLandscape = helpers.isLandscape()
         return (
             <Carousel
                 data={movies}
                 renderItem={renderItemPrincipalMovie}
-                sliderWidth={screenWidth - normalize(isLandscape ? 110 : 20)}
+                sliderWidth={screenWidth - 20}
                 itemWidth={screenWidth - normalize(100)}
             />
         )
