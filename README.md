@@ -20,4 +20,4 @@ npm install
        
 
 ## Execute tests:
-
+Execute command: npm run test and open /coverage/lcov-report/index.html on your browser to see the results well displayed
