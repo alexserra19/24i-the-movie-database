@@ -1,7 +1,7 @@
 import helpers from "../utils/helpers";
 
 const interceptor = {
-    async doRequest(url: string, body = null, method = 'GET', contentType = 'application/json', formData = false) {
+    async doRequest(url: string, body = null, method = 'GET', contentType = 'application/json', formData = false) {        
         try {
             const response = await fetch(url, {
                 method: method,

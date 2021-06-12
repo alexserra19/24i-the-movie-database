@@ -3,7 +3,6 @@ import { View, StyleSheet, SafeAreaView, TouchableOpacity, Text, Modal, Image, D
 import AppConstants from '../utils/AppConstants';
 import { normalize } from 'react-native-elements';
 import { useSelector } from "react-redux";
-import { IsLoadingHoc } from "../components/HOCS/IsLoadingHOC";
 import { HeaderBar } from "../components/shared/HeaderBar"
 import * as RootNavigation from "../navigation/RootNavigation";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -103,7 +102,7 @@ const DetailsScreen = (props: IDetailsScreenProps) => {
     );
 }
 
-export default IsLoadingHoc(DetailsScreen);
+export default DetailsScreen;
 
 
 const styles = StyleSheet.create({
