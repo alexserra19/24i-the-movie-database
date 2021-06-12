@@ -6,21 +6,21 @@ This is a technical test for 24i that uses the API of TheMovieDatabase
 
 Get up and running with our Movies sample app:
 
-1. Once you have the repo cloned and met all the requirements above, run the following commands:
+Once you have the repo cloned and met all the requirements above, run the following commands:
 
 iOS and Android:
     npm install
 
-iOS:
-    cd ios
-    pod install
+## iOS:
+1. cd ios
+2. pod install
 
-Run iOS:
-    npx react-native run-ios
+## Run iOS:
+1. npx react-native run-ios
 
-Run Android:
-    npx react-native run-android
+## Run Android:
+1. npx react-native run-android
        
 
-2. Execute tests:
+Execute tests:
 
