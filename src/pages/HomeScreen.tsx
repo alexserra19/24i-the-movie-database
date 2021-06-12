@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, Text, Dimensions, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Text, Dimensions, ScrollView, FlatList, Platform } from 'react-native';
 import AppConstants from '../utils/AppConstants';
 import { normalize, SearchBar } from 'react-native-elements';
 import { useDispatch, useSelector } from "react-redux";
@@ -164,7 +164,9 @@ const HomeScreen = (props: IHomeScreenProps) => {
                         }}
                         fixAndroidTouchableBug
                     />
-                    <Text style={{width: '100%', height: 60, position: 'absolute', bottom: 0, left: 0}}>{' '}</Text>
+                    {Platform.OS === "android" &&
+                        <Text style={{ width: '100%', height: 60, position: 'absolute', bottom: 0, left: 0 }}>{' '}</Text>
+                    }
 
                 </View>
                 <FlatList

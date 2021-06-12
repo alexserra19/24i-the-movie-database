@@ -23,7 +23,7 @@ class MediaService {
         let response = await interceptorService.doRequest(url);
         let data: Array<Category> = []
         if (response?.isSuccess) {
-            data = MediaAdapter.JSONToCategoryList(response.body.genres, media)
+            data = MediaAdapter.JSONToCategoryList(response.body.genres)
         }
         return data
     }

@@ -25,7 +25,7 @@ class MediaAdapter {
 
 
 
-    JSONToCategoryList(categoryList: Array<any>, type: Movie | Serie): Array<Category> {
+    JSONToCategoryList(categoryList: Array<any>): Array<Category> {
         let categoryListAdapted = categoryList.map((item) => {
             return (
                 {
