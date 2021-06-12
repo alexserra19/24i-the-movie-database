@@ -1,0 +1,240 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DetailsScreen should match the snapshot 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#ffff",
+      "flex": 1,
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "height": 64.28571428571428,
+          "padding": 12.857142857142858,
+          "width": "100%",
+        },
+        Object {
+          "alignSelf": "center",
+          "padding": 12.857142857142858,
+          "position": "absolute",
+          "top": 38.57142857142857,
+          "zIndex": 3,
+        },
+      ]
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "flex-start",
+          "flex": 1,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+        testID="headerBarButton"
+      >
+        <Text>
+          <Text
+            allowFontScaling={false}
+            style={
+              Array [
+                Object {
+                  "color": "#ffff",
+                  "fontSize": 38.57142857142857,
+                },
+                undefined,
+                Object {
+                  "fontFamily": "FontAwesome",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                Object {},
+              ]
+            }
+          >
+            
+          </Text>
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignItems": "flex-start",
+          "flex": 4,
+          "paddingRight": 25.714285714285715,
+        }
+      }
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#ffff",
+              "fontSize": 25.714285714285715,
+              "fontWeight": "bold",
+            },
+            undefined,
+          ]
+        }
+      >
+        Details
+      </Text>
+    </View>
+  </View>
+  <RCTScrollView
+    scrollEnabled={true}
+    showsVerticalScrollIndicator={false}
+  >
+    <View>
+      <View
+        style={
+          Array [
+            Object {
+              "left": 0,
+              "right": 0,
+              "width": "100%",
+            },
+            Object {
+              "height": 514.2857142857142,
+            },
+          ]
+        }
+      >
+        <Image
+          source={
+            Object {
+              "testUri": "../../../src/assets/images/no-image.jpeg",
+            }
+          }
+          style={
+            Object {
+              "height": "100%",
+              "resizeMode": "stretch",
+              "width": "100%",
+            }
+          }
+        />
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "#409ff7",
+              "borderRadius": 90,
+              "bottom": -38.57142857142857,
+              "elevation": 9,
+              "height": 90,
+              "justifyContent": "center",
+              "opacity": 1,
+              "padding": 10,
+              "position": "absolute",
+              "right": 25.714285714285715,
+              "shadowColor": "#000",
+              "shadowOffset": Object {
+                "height": 4,
+                "width": 0,
+              },
+              "shadowOpacity": 0.32,
+              "shadowRadius": 5.46,
+              "width": 90,
+            }
+          }
+        >
+          <Text>
+            <Text
+              allowFontScaling={false}
+              style={
+                Array [
+                  Object {
+                    "color": "#ffff",
+                    "fontSize": 38.57142857142857,
+                  },
+                  undefined,
+                  Object {
+                    "fontFamily": "FontAwesome",
+                    "fontStyle": "normal",
+                    "fontWeight": "normal",
+                  },
+                  Object {},
+                ]
+              }
+            >
+              
+            </Text>
+          </Text>
+        </View>
+      </View>
+      <RCTSafeAreaView
+        emulateUnlessSupported={true}
+      >
+        <View
+          style={
+            Object {
+              "marginTop": 25.714285714285715,
+              "padding": 12.857142857142858,
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontSize": 32.14285714285714,
+                "marginBottom": 12.857142857142858,
+              }
+            }
+          />
+          <Text
+            style={
+              Object {
+                "fontSize": 23.142857142857142,
+                "marginBottom": 25.714285714285715,
+              }
+            }
+          />
+          <Text
+            style={
+              Object {
+                "fontSize": 21.857142857142858,
+                "lineHeight": 28,
+                "textAlign": "justify",
+              }
+            }
+          />
+        </View>
+      </RCTSafeAreaView>
+    </View>
+  </RCTScrollView>
+</View>
+`;

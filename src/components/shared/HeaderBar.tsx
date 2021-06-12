@@ -19,6 +19,7 @@ export const HeaderBar = (props: IHeaderBarProps) => {
             <View style={styles.iconContainer}>
                 <TouchableOpacity
                     onPress={props.onPress}
+                    testID={'headerBarButton'}
                 >
                     <Text>
                         <Icon name="arrow-left" size={normalize(30)} color={AppConstants.colors.white}/>
