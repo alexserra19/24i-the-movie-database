@@ -13,10 +13,10 @@ npm install
 2. pod install
 
 ## Run iOS:
-npx react-native run-ios
+(on project folder) npx react-native run-ios
 
 ## Run Android:
-npx react-native run-android
+(on project folder) npx react-native run-android
        
 
 ## Execute tests:
