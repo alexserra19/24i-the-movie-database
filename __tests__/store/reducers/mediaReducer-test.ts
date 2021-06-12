@@ -1,18 +1,26 @@
-import renderer from 'react-it-renderer';
+import renderer from 'react-test-renderer';
 import mediaTypes from '../../../src/store/types/mediaTypes';
-import mediaActions from '../../../src/store/actions/mediaActions';
+import mediaReducer from '../../../src/store/reducers/mediaReducer';
 
 
-describe('Media Actions', () => {
-    it('initializeStart', () => {
-        const expectedAction = {
-            type: mediaTypes.INITIALIZE_START,
-        }
+describe('Media Reducer', () => {
 
-        expect(mediaActions.initializeStart()).toEqual(expectedAction)
+    let initialState = {
+        movies: [],
+        tvSeries: [],
+        moviesCategories: [],
+        tvSeriesCategories: [],
+        selectedMedia: null,
+        listsLoaded: false,
+        selectedMedia: null
+    }
+
+    it('should return the initial state', () => {
+        expect(mediaReducer(initialState, {})).toEqual(initialState);
     });
 
-    it('initializeFinish', () => {
+    it('should handle INITIALIZE_FINISH', () => {
+
         const mockMovies = [
             {
                 id: 1,
@@ -57,20 +65,31 @@ describe('Media Actions', () => {
             }
         ]
 
-        const expectedAction = {
+        const mockInitializeFinishAction = {
             type: mediaTypes.INITIALIZE_FINISH,
             data: {
                 movies: mockMovies,
                 tvSeries: mockTvSeries,
                 moviesCategories: mockMoviesCategories,
-                tvSeriesCategories: mockTvSeriesCategories
+                tvSeriesCategories: mockTvSeriesCategories,
+                listsLoaded: true
             }
+        };
+
+
+        const mockResultState = {
+            ...initialState,
+            movies: mockMovies,
+            tvSeries: mockTvSeries,
+            moviesCategories: mockMoviesCategories,
+            tvSeriesCategories: mockTvSeriesCategories,
+            listsLoaded: true
         }
 
-        expect(mediaActions.initializeFinish(mockMovies, mockTvSeries, mockMoviesCategories, mockTvSeriesCategories)).toEqual(expectedAction)
+        expect(mediaReducer(initialState, mockInitializeFinishAction)).toEqual(mockResultState);
     });
 
-    it('selectMedia', () => {
+    it('should handle SELECT_MEDIA', () => {
 
         const mockMedia = {
             id: 1,
@@ -85,11 +104,17 @@ describe('Media Actions', () => {
             numVotes: 10
         }
 
-        const expectedAction = {
+        const mockSelectMediaAction = {
             type: mediaTypes.SELECT_MEDIA,
             data: mockMedia
+        };
+
+
+        const mockResultState = {
+            ...initialState,
+            selectedMedia: mockMedia
         }
 
-        expect(mediaActions.selectMedia(mockMedia)).toEqual(expectedAction)
+        expect(mediaReducer(initialState, mockSelectMediaAction)).toEqual(mockResultState);
     });
 });
